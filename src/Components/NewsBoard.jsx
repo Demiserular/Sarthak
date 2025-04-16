@@ -16,6 +16,9 @@ const NewsBoard = ({category}) => {
         const response = await fetch(url);
         
         if (!response.ok) {
+          if (response.status === 426) {
+            throw new Error('NewsAPI is not available in production. Please upgrade to a paid plan or use a proxy server.');
+          }
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
@@ -52,6 +55,18 @@ const NewsBoard = ({category}) => {
       <div className="container py-4 text-center">
         <div className="alert alert-danger" role="alert">
           {error}
+          {error.includes('426') && (
+            <div className="mt-2">
+              <small>
+                <strong>Suggestions:</strong>
+                <ul className="list-unstyled mt-1">
+                  <li>• Use the development environment (npm run dev)</li>
+                  <li>• Upgrade to a NewsAPI paid plan</li>
+                  <li>• Implement a proxy server</li>
+                </ul>
+              </small>
+            </div>
+          )}
         </div>
       </div>
     );
